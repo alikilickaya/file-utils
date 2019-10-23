@@ -29,7 +29,7 @@ public class FileUtils {
     }
 
     /**
-     * @param inputStream a inputStream will that will be read and parsed (from a file for example)
+     * @param inputStream an inputStream will that will be read and parsed (from a file for example)
      * @param mapper       a function for mapping each lines of the file to a an object
      * @param skipLines    to skip first x lines
      * @return List of mapped object. Type of the object is defined on the mapper function.
