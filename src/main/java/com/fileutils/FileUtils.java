@@ -20,15 +20,29 @@ public class FileUtils {
      * @return List of mapped object. Type of the object is defined on the mapper function.
      */
     public static <T> List<T> parseToObject(String fileLocation, Function<String, T> mapper, int skipLines) {
-        try (BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(new File(fileLocation)), StandardCharsets.UTF_8))) {
+        try {
+            return parseToObject(new FileInputStream(new File(fileLocation)), mapper, skipLines);
+        } catch (FileNotFoundException e) {
+            LOGGER.log(Level.SEVERE, "File could not be found at {0}", fileLocation);
+            return null;
+        }
+    }
+
+    /**
+     * @param inputStream a inputStream will that will be read and parsed (from a file for example)
+     * @param mapper       a function for mapping each lines of the file to a an object
+     * @param skipLines    to skip first x lines
+     * @return List of mapped object. Type of the object is defined on the mapper function.
+     */
+    public static <T> List<T> parseToObject(InputStream inputStream, Function<String, T> mapper, int skipLines) {
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             return bufferedReader.lines()
                     .skip(skipLines)
                     .map(mapper)
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "File could not be found at {0}", fileLocation);
+            LOGGER.log(Level.SEVERE, "File could not be read", e);
             return null;
         }
     }
