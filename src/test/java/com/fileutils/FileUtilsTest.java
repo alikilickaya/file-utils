@@ -3,6 +3,9 @@ package com.fileutils;
 import com.fileutils.model.Person;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.function.Function;
@@ -31,6 +34,16 @@ public class FileUtilsTest {
         assertEquals(2, persons.size());
         assertEquals(new Person("ali", "kilickaya", "Berlin, Germany"), persons.get(0));
         assertEquals(new Person("roberto", "dussman", "Sao Paulo, Brazil"), persons.get(1));
+    }
+
+    @Test
+    public void testParseStreamToString() throws Exception {
+        InputStream inputStream = new FileInputStream(new File(classLoader.getResource("names.csv").getPath()));
+
+        List<String> names = FileUtils.parseToObject(inputStream, Function.identity(), 1);
+
+        assertEquals(3, names.size());
+        assertEquals("ali", names.get(0));
     }
 
     private Function<String, Person> mapToPerson = line -> {
